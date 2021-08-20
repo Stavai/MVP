@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
 
@@ -16,6 +17,7 @@ const root = {
     }
 }
 
+// app.use('/build', express.static('build'))
 app.use(express.json());
 app.use('/graphql', graphqlHTTP({
     schema: schema,
