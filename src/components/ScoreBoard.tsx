@@ -2,7 +2,7 @@ import React from 'react';
 
 const ScoreBoard = () => {
   return (
-    <div></div>
+    <div>Score Board</div>
   );
 }
 
