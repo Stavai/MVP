@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
 import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
+import styled from 'styled-components';
 import Header from './components/Header';
 import Keyboard from './components/Keyboard';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import ScoreBoard from './components/ScoreBoard';
+import ScoreAndDropdowns from './components/ScoreAndDropdowns';
 import {
   useQuery,
+  useMutation,
   gql
 } from "@apollo/client";
 
@@ -24,6 +27,28 @@ const GET_SONGS = gql`
   }
 `
 
+const POST_SCORE = gql`
+  mutation addScore($score: NewScore!) {
+    postScore(details: $score) {
+      id
+      username
+      score
+      difficulty
+      song
+    }
+  }
+`
+
+const CurrentChar = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  height: 75px;
+  width: 75px;
+  border: solid;
+`
+
 function App() {
 
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -31,13 +56,26 @@ function App() {
   const [songList, setSongList] = useState([]);
   const [currentSong, setCurrentSong] = useState<any>({});
   const [currentSongText, setCurrentSongText] = useState([]);
+  const [currentTextChar, setCurrentTextChar] = useState<any>('');
 
   const [currentDifficulty, setCurrentDifficulty] = useState('');
 
   const [points, setPoints] = useState(0);
   const [totalPoints, setTotalPoints] = useState(0);
 
+  const [countdown, setCountdown] = useState(3);
   const [isGameRunning, setIsGameRunning] = useState(false);
+
+  const [saveToDb, setSaveToDb] = useState(false);
+
+  const [postScore] = useMutation(POST_SCORE, {
+    onCompleted: (result) => {
+      console.log(result);
+    },
+    onError: (err) => {
+      console.log(err);
+    }
+  })
 
   const { data, loading, error } = useQuery(GET_SONGS, {
     onCompleted: (result) => {
@@ -49,19 +87,51 @@ function App() {
     }
   })
 
-  const startGame = () => {
+  const startGame = async () => {
+
+    if (currentSongText.length > 0 && currentDifficulty !== '') {
+      setPoints(0);
+      setIsGameRunning(true);
+      let characters = [...currentSongText];
+      let speed = 
+      currentDifficulty === 'Easy' ? 1000 :
+      currentDifficulty === 'Medium' ? 500 :
+      currentDifficulty === 'Hard' ? 200 : 0
+  
+      let loopChars = async () => {
+        let shift = characters.shift();
+        setTimeout(() => {
+          setCurrentTextChar(shift);
+          if (characters.length > 0) {
+            loopChars()
+          } else {
+            setTimeout(() => {
+              setCurrentTextChar('');
+              setIsGameRunning(false);
+              setCountdown(3);
+              setSaveToDb(true);
+            }, speed)
+          }
+        }, speed)
+      }
+  
+      let countDownRecurse = async (num: number) => {
+        setTimeout(() => {
+          // console.log(num);
+          setCountdown(num);
+          if (num > 0) {
+            countDownRecurse(num - 1);
+          } else {
+            loopChars();
+          }
+        }, 1000)
+      }
+      countDownRecurse(2);
+    } else {
+      alert('please select a song and a difficulty');
+    }
     
   }
-
-  useEffect(() => {
-    // console.log(currentUser);
-    // console.log(songList)
-    // console.log(currentSong);
-    // console.log(currentDifficulty);
-    console.log(totalPoints)
-    console.log(currentSongText)
-  }, [currentUser, songList, currentSong, currentDifficulty, totalPoints, currentSongText])
-
 
   useEffect(() => {
     if (currentSong.song_text !== undefined) {
@@ -71,20 +141,64 @@ function App() {
     }
   }, [currentSong])
 
+  useEffect(() => {
+    console.log(currentTextChar)
+    console.log(countdown)
+  }, [currentTextChar, countdown])
+
+  useEffect(() => {
+    if (currentUser !== null && saveToDb === true) {
+      postScore({
+        variables: {
+          score: {
+            username: currentUser.name,
+            score: points,
+            difficulty: currentDifficulty,
+            song: currentSong.name
+          }
+        }
+      })
+    }
+    setSaveToDb(false);
+  }, [saveToDb, currentUser, currentDifficulty, points, currentSong, postScore])
+
+  useEffect(() => {
+    if (localStorage.username && localStorage.password && localStorage.id) {
+      setCurrentUser({
+        id: localStorage.id,
+        name: localStorage.username,
+        password: localStorage.password
+      })
+    }
+  }, [])
+
   return (
     <Router>
       <div className="App">
         <Header currentUser={currentUser} setCurrentUser={setCurrentUser}/>
         <Switch>
           <Route path='/keyboard'>
-            <Keyboard 
-              songList={songList} 
-              setCurrentDifficulty={setCurrentDifficulty}
+
+            <ScoreAndDropdowns
+              songList={songList}
               setCurrentSong={setCurrentSong}
+              setCurrentDifficulty={setCurrentDifficulty}
+              points={points}
+              totalPoints={totalPoints}
+              isGameRunning={isGameRunning}
+              startGame={startGame}
+              countdown={countdown}
+            />
+
+            <CurrentChar style={{visibility: isGameRunning ? 'visible' : 'hidden'}}>{currentTextChar}</CurrentChar>
+
+            <Keyboard 
               points={points}
               totalPoints={totalPoints}
               setPoints={setPoints}
               isGameRunning={isGameRunning}
+              startGame={startGame}
+              currentTextChar={currentTextChar}
             />
           </Route>
           <Route path='/scoreboard'>

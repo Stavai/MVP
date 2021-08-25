@@ -8,12 +8,13 @@ const KeyboardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border: solid;
+  border-width: 2px;
   width: 1370px;
   margin: 300px auto;
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   .pressed {
-    color: red;
+    background-color: red;
   }
 `
 
@@ -22,6 +23,7 @@ const Key = styled.div`
   justify-content: center;
   align-items: center;
   border: solid;
+  border-width: 2px;
   width: 75px;
   height: 75px;
   margin: 7px;
@@ -32,6 +34,7 @@ const Shift = styled.div`
   justify-content: center;
   align-items: center;
   border: solid;
+  border-width: 2px;
   width: 166px;
   height: 75px;
   margin: 7px;
@@ -39,6 +42,7 @@ const Shift = styled.div`
 
 const Spacebar = styled.div`
   border: solid;
+  border-width: 2px;
   width: 530px;
   height: 75px;
   margin: 7px;
@@ -68,7 +72,7 @@ const RowFour = styled.div`
   display: flex;
 `
 
-const Keyboard = ({ songList, setCurrentSong, setCurrentDifficulty, points, totalPoints, setPoints, isGameRunning } : any) => {
+const Keyboard = ({ songList, setCurrentSong, setCurrentDifficulty, points, totalPoints, setPoints, isGameRunning, startGame, currentTextChar } : any) => {
 
   const [currentKey, setCurrentKey] = useState('');
   const [shift, setShift] = useState(false);
@@ -77,6 +81,15 @@ const Keyboard = ({ songList, setCurrentSong, setCurrentDifficulty, points, tota
 
   useKeyPress((e) => !(filterKey).includes(e.key), (e) => {
     setCurrentKey(e.key)
+
+    if (isGameRunning === true) {
+      if (e.key === currentTextChar) {
+        setPoints(points + 1);
+      } else if (e.key !== currentTextChar) {
+        setPoints(points - 1);
+      }
+    }
+
     if (e.code === 'Space') {
       e.preventDefault()
     }
@@ -111,14 +124,15 @@ const Keyboard = ({ songList, setCurrentSong, setCurrentDifficulty, points, tota
   return (
     <div>
 
-      <ScoreAndDropdowns 
+      {/* <ScoreAndDropdowns 
         songList={songList}
         setCurrentSong={setCurrentSong}
         setCurrentDifficulty={setCurrentDifficulty}
         points={points}
         totalPoints={totalPoints}
         isGameRunning={isGameRunning}
-      />
+        startGame={startGame}
+      /> */}
 
       <KeyboardWrapper>
 

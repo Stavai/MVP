@@ -41,12 +41,16 @@ const Header = ({ currentUser, setCurrentUser } : any) => {
     <Nav>
       <Title>Keyboarding Hero</Title>
       <List>
+        {console.log(currentUser)}
         {currentUser !== null ? <NavItem>{currentUser.name}</NavItem> : ''}
         <NavItem><StyledLink to='/keyboard'>keyboard</StyledLink></NavItem>
         <NavItem><StyledLink to='/scoreboard'>scoreboard</StyledLink></NavItem>
         {currentUser === null ? <NavItem><StyledLink to='/login'>login</StyledLink></NavItem> : ''}
         {currentUser === null ? <NavItem><StyledLink to='/signup'>signup</StyledLink></NavItem> : ''}
-        {currentUser !== null ? <NavItem onClick={() => setCurrentUser(null)}><StyledLink to='/keyboard'>logout</StyledLink></NavItem> : ''}
+        {currentUser !== null ? <NavItem onClick={() => {
+          localStorage.clear();
+          setCurrentUser(null);
+        }}><StyledLink to='/keyboard'>logout</StyledLink></NavItem> : ''}
       </List>
     </Nav>
   );

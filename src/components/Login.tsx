@@ -49,6 +49,10 @@ const Login = ({ setCurrentUser } : any) => {
           name: data.user.name,
           password: data.user.password
         })
+        localStorage.clear();
+        localStorage.username = data.user.name;
+        localStorage.password = data.user.password;
+        localStorage.id = data.user.id;
       }
       console.log(data.user);
     },
