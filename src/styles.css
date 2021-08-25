@@ -5,3 +5,13 @@ ul {
 h1 {
   margin: 0px;
 }
+
+/* @keyframes descendingKey {
+  from {width: 75px;}
+  to {width: 100px;}
+}
+
+#currentChar {
+  animation-name: descendingKey;
+  animation-duration: 1s;
+} */

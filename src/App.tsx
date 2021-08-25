@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
 import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import Header from './components/Header';
 import Keyboard from './components/Keyboard';
 import Login from './components/Login';
@@ -39,17 +39,27 @@ const POST_SCORE = gql`
   }
 `
 
+const DescendingKey = keyframes`
+  from {top: 0px;}
+  to {top: 280px;}
+`
+
 const CurrentChar = styled.div`
   display: flex;
+  position: relative;
   justify-content: center;
   align-items: center;
   margin: auto;
   height: 75px;
   width: 75px;
   border: solid;
+  font-size: 30px;
+  animation-name: ${DescendingKey};
 `
 
 function App() {
+
+  const [playState, setPlayState] = useState('paused');
 
   const [currentUser, setCurrentUser] = useState<any>(null);
 
@@ -102,10 +112,14 @@ function App() {
         let shift = characters.shift();
         setTimeout(() => {
           setCurrentTextChar(shift);
+          if (playState === 'paused') {
+            setPlayState('running');
+          }
           if (characters.length > 0) {
             loopChars()
           } else {
             setTimeout(() => {
+              setPlayState('paused');
               setCurrentTextChar('');
               setIsGameRunning(false);
               setCountdown(3);
@@ -190,7 +204,17 @@ function App() {
               countdown={countdown}
             />
 
-            <CurrentChar style={{visibility: isGameRunning ? 'visible' : 'hidden'}}>{currentTextChar}</CurrentChar>
+            <CurrentChar 
+              id='currentChar' 
+              style={{
+                visibility: isGameRunning ? 'visible' : 'hidden',
+                animationDuration: '1000ms',
+                animationIterationCount: 'infinite',
+                animationTimingFunction: 'linear',
+                animationPlayState: playState
+              }}>
+                {currentTextChar}
+            </CurrentChar>
 
             <Keyboard 
               points={points}
