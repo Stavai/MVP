@@ -17,7 +17,7 @@ app.use(express.json());
 const schema = buildSchema(`
   type Query {
     users: [User]
-    user(name: String!): User
+    user(name: String!, password: String!): User
     userScores(username: String!): [Score]
     song(name: String!): Song
     songs: [Song]
@@ -58,7 +58,7 @@ const schema = buildSchema(`
 `);
 
 const getUser = async (args) => {
-  const userData = await pool.query(`SELECT * FROM user_credentials WHERE name='${args.name}'`);
+  const userData = await pool.query(`SELECT * FROM user_credentials WHERE name='${args.name}' AND password='${args.password}'`);
   return userData.rows[0];
 }
 

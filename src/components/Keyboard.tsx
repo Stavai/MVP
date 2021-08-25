@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ScoreAndDropdowns from './ScoreAndDropdowns';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { useKeyPress } from 'ahooks';
 import styled from 'styled-components';
 
@@ -66,7 +68,7 @@ const RowFour = styled.div`
   display: flex;
 `
 
-const Keyboard = () => {
+const Keyboard = ({ songList, setCurrentSong, setCurrentDifficulty, points, totalPoints, setPoints, isGameRunning } : any) => {
 
   const [currentKey, setCurrentKey] = useState('');
   const [shift, setShift] = useState(false);
@@ -75,11 +77,9 @@ const Keyboard = () => {
 
   useKeyPress((e) => !(filterKey).includes(e.key), (e) => {
     setCurrentKey(e.key)
-    console.log(e.code)
     if (e.code === 'Space') {
       e.preventDefault()
     }
-    console.log(document.querySelector(`.${e.code}`)?.innerHTML)
     document.querySelector(`.${e.code}`)?.classList.add('pressed');
   }, {
     events: ['keydown']
@@ -104,59 +104,72 @@ const Keyboard = () => {
     events: ['keyup']
   })
 
-  useEffect(() => {
-    console.log(currentKey);
-  }, [currentKey])
+  // useEffect(() => {
+  //   console.log(currentKey);
+  // }, [currentKey])
 
   return (
-    <KeyboardWrapper>
+    <div>
 
-      <RowOne>
-        <Key className='KeyQ'>{shift ? 'Q' : 'q'}</Key>
-        <Key className='KeyW'>{shift ? 'W' : 'w'}</Key>
-        <Key className='KeyE'>{shift ? 'E' : 'e'}</Key>
-        <Key className='KeyR'>{shift ? 'R' : 'r'}</Key>
-        <Key className='KeyT'>{shift ? 'T' : 't'}</Key>
-        <Key className='KeyY'>{shift ? 'Y' : 'y'}</Key>
-        <Key className='KeyU'>{shift ? 'U' : 'u'}</Key>
-        <Key className='KeyI'>{shift ? 'I' : 'i'}</Key>
-        <Key className='KeyO'>{shift ? 'O' : 'o'}</Key>
-        <Key className='KeyP'>{shift ? 'P' : 'p'}</Key>
-      </RowOne>
+      <ScoreAndDropdowns 
+        songList={songList}
+        setCurrentSong={setCurrentSong}
+        setCurrentDifficulty={setCurrentDifficulty}
+        points={points}
+        totalPoints={totalPoints}
+        isGameRunning={isGameRunning}
+      />
 
-      <RowTwo>
-        <Key className='KeyA'>{shift ? 'A' : 'a'}</Key>
-        <Key className='KeyS'>{shift ? 'S' : 's'}</Key>
-        <Key className='KeyD'>{shift ? 'D' : 'd'}</Key>
-        <Key className='KeyF'>{shift ? 'F' : 'f'}</Key>
-        <Key className='KeyG'>{shift ? 'G' : 'g'}</Key>
-        <Key className='KeyH'>{shift ? 'H' : 'h'}</Key>
-        <Key className='KeyJ'>{shift ? 'J' : 'j'}</Key>
-        <Key className='KeyK'>{shift ? 'K' : 'k'}</Key>
-        <Key className='KeyL'>{shift ? 'L' : 'l'}</Key>
-        <Key className='Semicolon'>{shift ? ';' : ':'}</Key>
-        <Key className='Quote'>{shift ? "'" : '"'}</Key>
-      </RowTwo>
+      <KeyboardWrapper>
 
-      <RowThree>
-        <Shift className='ShiftLeft'>shift</Shift>
-        <Key className='KeyZ'>{shift ? 'Z' : 'z'}</Key>
-        <Key className='KeyX'>{shift ? 'X' : 'x'}</Key>
-        <Key className='KeyC'>{shift ? 'C' : 'c'}</Key>
-        <Key className='KeyV'>{shift ? 'V' : 'v'}</Key>
-        <Key className='KeyB'>{shift ? 'B' : 'b'}</Key>
-        <Key className='KeyN'>{shift ? 'N' : 'n'}</Key>
-        <Key className='KeyM'>{shift ? 'M' : 'm'}</Key>
-        <Key className='Comma'>{shift ? '<' : ','}</Key>
-        <Key className='Period'>{shift ? '>' : '.'}</Key>
-        <Key className='Slash'>{shift ? '?' : '/'}</Key>
-        <Shift className='ShiftRight'>shift</Shift>
-      </RowThree>
+        <RowOne>
+          <Key className='KeyQ'>{shift ? 'Q' : 'q'}</Key>
+          <Key className='KeyW'>{shift ? 'W' : 'w'}</Key>
+          <Key className='KeyE'>{shift ? 'E' : 'e'}</Key>
+          <Key className='KeyR'>{shift ? 'R' : 'r'}</Key>
+          <Key className='KeyT'>{shift ? 'T' : 't'}</Key>
+          <Key className='KeyY'>{shift ? 'Y' : 'y'}</Key>
+          <Key className='KeyU'>{shift ? 'U' : 'u'}</Key>
+          <Key className='KeyI'>{shift ? 'I' : 'i'}</Key>
+          <Key className='KeyO'>{shift ? 'O' : 'o'}</Key>
+          <Key className='KeyP'>{shift ? 'P' : 'p'}</Key>
+        </RowOne>
 
-      <RowFour>
-        <Spacebar className='Space'></Spacebar>
-      </RowFour>
-    </KeyboardWrapper>
+        <RowTwo>
+          <Key className='KeyA'>{shift ? 'A' : 'a'}</Key>
+          <Key className='KeyS'>{shift ? 'S' : 's'}</Key>
+          <Key className='KeyD'>{shift ? 'D' : 'd'}</Key>
+          <Key className='KeyF'>{shift ? 'F' : 'f'}</Key>
+          <Key className='KeyG'>{shift ? 'G' : 'g'}</Key>
+          <Key className='KeyH'>{shift ? 'H' : 'h'}</Key>
+          <Key className='KeyJ'>{shift ? 'J' : 'j'}</Key>
+          <Key className='KeyK'>{shift ? 'K' : 'k'}</Key>
+          <Key className='KeyL'>{shift ? 'L' : 'l'}</Key>
+          <Key className='Semicolon'>{shift ? ';' : ':'}</Key>
+          <Key className='Quote'>{shift ? "'" : '"'}</Key>
+        </RowTwo>
+
+        <RowThree>
+          <Shift className='ShiftLeft'>shift</Shift>
+          <Key className='KeyZ'>{shift ? 'Z' : 'z'}</Key>
+          <Key className='KeyX'>{shift ? 'X' : 'x'}</Key>
+          <Key className='KeyC'>{shift ? 'C' : 'c'}</Key>
+          <Key className='KeyV'>{shift ? 'V' : 'v'}</Key>
+          <Key className='KeyB'>{shift ? 'B' : 'b'}</Key>
+          <Key className='KeyN'>{shift ? 'N' : 'n'}</Key>
+          <Key className='KeyM'>{shift ? 'M' : 'm'}</Key>
+          <Key className='Comma'>{shift ? '<' : ','}</Key>
+          <Key className='Period'>{shift ? '>' : '.'}</Key>
+          <Key className='Slash'>{shift ? '?' : '/'}</Key>
+          <Shift className='ShiftRight'>shift</Shift>
+        </RowThree>
+
+        <RowFour>
+          <Spacebar className='Space'></Spacebar>
+        </RowFour>
+
+      </KeyboardWrapper>
+    </div>
   );
 }
 
