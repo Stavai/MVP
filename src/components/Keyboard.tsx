@@ -10,7 +10,7 @@ const KeyboardWrapper = styled.div`
   border: solid;
   border-width: 2px;
   width: 1370px;
-  margin: 300px auto;
+  margin: 250px auto 0;
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   .pressed {
@@ -85,7 +85,7 @@ const Keyboard = ({ songList, setCurrentSong, setCurrentDifficulty, points, tota
     if (isGameRunning === true) {
       if (e.key === currentTextChar) {
         setPoints(points + 1);
-      } else if (e.key !== currentTextChar) {
+      } else if (e.key !== currentTextChar && e.key !== 'Shift') {
         setPoints(points - 1);
       }
     }

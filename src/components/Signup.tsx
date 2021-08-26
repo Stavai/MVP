@@ -40,6 +40,10 @@ const Signup = ({ setCurrentUser } : any) => {
       console.log(result);
       alert(`thanks for signing up ${result.postUser.name}!`);
       setCurrentUser(result.postUser)
+      localStorage.clear()
+      localStorage.id = result.postUser.id;
+      localStorage.username = result.postUser.name;
+      localStorage.password = result.postUser.name;
     },
     onError: (err) => {
       console.log(err);

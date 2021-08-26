@@ -44,8 +44,9 @@ const CurrentChar = styled.div`
   justify-content: center;
   align-items: center;
   margin: auto;
-  height: 75px;
-  width: 75px;
+  height: 100px;
+  width: 100px;
+  font-size: 30px;
   border: solid;
 `
 
@@ -94,9 +95,9 @@ function App() {
       setIsGameRunning(true);
       let characters = [...currentSongText];
       let speed = 
-      currentDifficulty === 'Easy' ? 1000 :
-      currentDifficulty === 'Medium' ? 500 :
-      currentDifficulty === 'Hard' ? 200 : 0
+      currentDifficulty === 'Easy' ? 1200 :
+      currentDifficulty === 'Medium' ? 700 :
+      currentDifficulty === 'Hard' ? 400 : 0
   
       let loopChars = async () => {
         let shift = characters.shift();
